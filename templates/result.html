@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Invoice Details</title>
+</head>
+<body>
+    <h1>Extracted Invoice Details</h1>
+    <table border="1" cellpadding="10">
+        <tr>
+            <th>Field</th>
+            <th>Value</th>
+        </tr>
+        {% for key, value in details.items() %}
+        <tr>
+            <td>{{ key }}</td>
+            <td>{{ value }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <br>
+    <a href="/">Upload Another Invoice</a>
+</body>
+</html>
