@@ -6,7 +6,8 @@ import cv2
 from PIL import Image
 from rapidfuzz import process, fuzz
 
-# 🔹 Poppler path (update this based on your installation)
+# 🔹 Tesseract OCR and Poppler paths
+pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 POPLER_PATH = r"C:\poppler-25.07.0\Library\bin"
 
 # 🔹 Keywords for each invoice field
@@ -22,10 +23,11 @@ FIELD_KEYWORDS = {
     "Customer": ["To", "Bill To", "Customer", "Buyer"],
 }
 
-# 🔹 Preprocess images for better OCR
+# 🔹 Preprocess image for better OCR
 def preprocess_image(image_path):
     img = cv2.imread(image_path)
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    gray = cv2.medianBlur(gray, 3)
     _, thresh = cv2.threshold(gray, 150, 255, cv2.THRESH_BINARY)
     pil_img = Image.fromarray(thresh)
     return pil_img
@@ -50,17 +52,27 @@ def extract_text_from_image(image_path):
     except Exception as e:
         return f"⚠️ Error reading image: {e}"
 
-# 🔹 Extract a field using fuzzy matching
+# 🔹 Extract a specific field using regex + fuzzy matching
 def extract_field(text, keywords, max_chars=50):
-    lines = text.split("\n")
+    lines = [line.strip() for line in text.split("\n") if line.strip()]
     for line in lines:
-        match, score = process.extractOne(line, keywords, scorer=fuzz.partial_ratio)
-        if score > 75:
-            # Extract value after keyword if possible
-            parts = re.split(r"[:\s]", line, maxsplit=1)
-            if len(parts) > 1:
-                return parts[1].strip()[:max_chars]
-            return line.strip()[:max_chars]
+        for keyword in keywords:
+            if keyword.lower() in line.lower():
+                # Extract the value after the keyword
+                match = re.search(rf"{keyword}[:\s\-]*([\w\s.,/#-]+)", line, re.IGNORECASE)
+                if match:
+                    return match.group(1).strip()[:max_chars]
+
+        # Fuzzy match fallback
+        result = process.extractOne(line, keywords, scorer=fuzz.partial_ratio)
+        if result:
+            match, score, _ = result
+            if score > 80:
+                # Try to extract a number, date, or text after the keyword
+                num_match = re.search(r"\b\d+[./-]?\d*[./-]?\d*\b", line)
+                if num_match:
+                    return num_match.group(0)
+                return line.strip()[:max_chars]
     return "Not Found"
 
 # 🔹 Extract invoice details
@@ -73,8 +85,22 @@ def extract_invoice_details(file_path):
     else:
         return {"Error": "Unsupported file type"}
 
+    # Optional: clean text for consistent matching
+    text = text.replace("\n\n", "\n").replace(":", " : ")
+
     details = {}
     for field, keywords in FIELD_KEYWORDS.items():
         details[field] = extract_field(text, keywords)
+
+    # 🔹 Smart value corrections
+    if details["Total"] == "Not Found":
+        total_match = re.search(r"(?:Total|Grand Total)[:\s]*([\d,.]+)", text, re.IGNORECASE)
+        if total_match:
+            details["Total"] = total_match.group(1)
+
+    if details["Invoice Date"] == "Not Found":
+        date_match = re.search(r"(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})", text)
+        if date_match:
+            details["Invoice Date"] = date_match.group(1)
 
     return details
