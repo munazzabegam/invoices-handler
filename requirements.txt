@@ -1,0 +1,8 @@
+Flask
+pytesseract
+pdf2image
+Pillow
+opencv-python
+rapidfuzz
+pandas        # New
+openpyxl      # New

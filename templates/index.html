@@ -2,12 +2,15 @@
 <html>
 <head>
     <title>Invoice Extractor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Upload Invoice PDF or Image</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required>
-        <button type="submit">Extract</button>
-    </form>
+    <div class="container">
+        <h1>Invoice Data Extractor</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".pdf,.jpg,.jpeg,.png" required multiple> 
+            <button type="submit">Extract Details</button>
+        </form>
+    </div>
 </body>
 </html>

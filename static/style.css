@@ -1,65 +1,169 @@
+/* Premium Color Palette:
+   - Primary/Accent: #0056b3 (Deep, professional blue)
+   - Secondary/Text: #495057 (Charcoal gray for readability)
+   - Background: #f8f9fa (Off-white, clean base)
+   - Border/Separator: #dee2e6 (Light gray)
+   - Success: #28a745 (Standard green for positive feedback)
+*/
+
 body {
-  font-family: "Segoe UI", sans-serif;
-  background: #f6f8fa;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
+    font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; /* Modern, clean font stack */
+    background-color: #f8f9fa; 
+    color: #495057; 
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    min-height: 100vh;
+    padding-top: 60px;
 }
 
 .container {
-  background: #fff;
-  padding: 30px 40px;
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-  text-align: center;
+    width: 90%;
+    max-width: 650px; 
+    background-color: #ffffff; 
+    padding: 45px 50px;
+    border-radius: 8px; /* Slightly tighter radius */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Finer, less intense shadow */
+    text-align: center;
 }
 
 h1 {
-  color: #333;
-  margin-bottom: 20px;
+    color: #0056b3; /* Deep blue accent */
+    margin-bottom: 35px;
+    font-size: 2.2rem;
+    font-weight: 300; /* Light weight for elegance */
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid #dee2e6; /* Subtle separator */
+    padding-bottom: 15px;
+}
+
+/* --- Form Styling --- */
+
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
 }
 
 input[type="file"] {
-  padding: 10px;
+    padding: 15px;
+    border: 1px solid #ced4da; /* Solid border for structure */
+    border-radius: 4px;
+    width: 100%;
+    background-color: #ffffff;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.3s ease;
 }
 
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: none;
-  background: #0078d7;
-  color: white;
-  border-radius: 8px;
-  cursor: pointer;
+input[type="file"]:hover {
+    border-color: #0056b3;
 }
 
-button:hover {
-  background: #005fa3;
+button[type="submit"], .button-link {
+    background-color: #0056b3;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    transition: background-color 0.3s ease, box-shadow 0.2s ease;
+    width: 100%;
+    max-width: 300px;
+    text-decoration: none; /* For download link */
+    display: inline-block;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.success {
-  color: green;
-  margin-top: 20px;
+button[type="submit"]:hover, .button-link:hover {
+    background-color: #004085; 
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
 }
 
-table {
-  margin: 20px auto;
-  border-collapse: collapse;
-  width: 80%;
+/* --- Results Styling --- */
+
+.results-section {
+    margin-top: 30px;
+    text-align: left;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
+.results-section h2, .results-section h3 {
+    color: #495057;
+    font-weight: 500;
+    padding-bottom: 10px;
 }
 
-.download-btn {
-  display: inline-block;
-  margin-top: 15px;
-  text-decoration: none;
-  color: white;
-  background: #28a745;
-  padding: 10px 15px;
-  border-radius: 6px;
+.results-section h2 {
+    font-size: 1.5rem;
+    border-bottom: 1px solid #dee2e6;
+    margin-bottom: 20px;
+}
+
+.results-section h3 {
+    font-size: 1.1rem;
+    color: #6c757d;
+}
+
+.results-section ul {
+    list-style: none;
+    padding: 0;
+    margin-top: 20px;
+    border: 1px solid #e9ecef;
+    border-radius: 4px;
+}
+
+.results-section li {
+    padding: 12px 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1rem;
+}
+
+.results-section li:last-child {
+    border-bottom: none;
+}
+
+.results-section li strong {
+    min-width: 150px;
+    color: #343a40;
+    font-weight: 600;
+}
+
+.status-message {
+    padding: 15px;
+    margin: 20px 0;
+    border-radius: 4px;
+    font-weight: 600;
+}
+
+.status-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.status-error {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+a {
+    color: #0056b3;
+    text-decoration: none;
+    margin-top: 20px;
+    display: block;
+    font-weight: 500;
+}
+
+a:hover {
+    text-decoration: underline;
 }

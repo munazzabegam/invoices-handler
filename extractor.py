@@ -7,6 +7,7 @@ from PIL import Image
 from rapidfuzz import process, fuzz
 
 # 🔹 Tesseract OCR and Poppler paths
+# IMPORTANT: Adjust these paths if they are different on your system!
 pytesseract.pytesseract.tesseract_cmd = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
 POPLER_PATH = r"C:\poppler-25.07.0\Library\bin"
 
@@ -41,7 +42,7 @@ def extract_text_from_pdf(pdf_path):
             text += pytesseract.image_to_string(img)
         return text
     except Exception as e:
-        return f"⚠️ Error reading PDF: {e}"
+        return f"⚠️ Error reading PDF. Check POPPLER_PATH and Tesseract: {e}"
 
 # 🔹 Extract text from image
 def extract_text_from_image(image_path):
@@ -50,7 +51,7 @@ def extract_text_from_image(image_path):
         text = pytesseract.image_to_string(preprocessed_img)
         return text
     except Exception as e:
-        return f"⚠️ Error reading image: {e}"
+        return f"⚠️ Error reading image. Check Tesseract path: {e}"
 
 # 🔹 Extract a specific field using regex + fuzzy matching
 def extract_field(text, keywords, max_chars=50):
@@ -78,12 +79,17 @@ def extract_field(text, keywords, max_chars=50):
 # 🔹 Extract invoice details
 def extract_invoice_details(file_path):
     ext = os.path.splitext(file_path)[1].lower()
+    
     if ext in [".pdf"]:
         text = extract_text_from_pdf(file_path)
     elif ext in [".jpg", ".jpeg", ".png", ".bmp", ".tiff"]:
         text = extract_text_from_image(file_path)
     else:
         return {"Error": "Unsupported file type"}
+
+    # Handle OCR errors from the extraction functions
+    if "⚠️ Error" in text:
+        return {"Extraction Error": text}
 
     # Optional: clean text for consistent matching
     text = text.replace("\n\n", "\n").replace(":", " : ")

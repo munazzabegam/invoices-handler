@@ -1,23 +1,56 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Invoice Details</title>
+    <title>Extraction Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <h1>Extracted Invoice Details</h1>
-    <table border="1" cellpadding="10">
-        <tr>
-            <th>Field</th>
-            <th>Value</th>
-        </tr>
-        {% for key, value in details.items() %}
-        <tr>
-            <td>{{ key }}</td>
-            <td>{{ value }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    <br>
-    <a href="/">Upload Another Invoice</a>
+    <div class="container">
+        <h1>Extraction Results</h1>
+        
+        <div class="status-message status-success">
+            Data successfully stored in memory. Total: **{{ storage_count }}** Invoice(s).
+        </div>
+
+        {% if details and details.get('Filename') %}
+            <div class="results-section">
+                
+                {% if batch_count > 1 %}
+                    <h2>Batch Processed</h2>
+                    <h3 style="font-weight: 400;">
+                        Details below represent the last file: **{{ details.Filename }}**
+                    </h3>
+                {% else %}
+                    <h2>Extraction Details: **{{ details.Filename }}**</h2>
+                {% endif %}
+
+                <ul>
+                {% for key, value in details.items() %}
+                    {% if key != 'Filename' and key != 'Error' %}
+                    <li>
+                        <strong>{{ key }}:</strong>
+                        <span>{{ value }}</span>
+                    </li>
+                    {% endif %}
+                {% endfor %}
+                {% if details.Error %}
+                    <li class="status-error">
+                        <strong>Processing Error:</strong>
+                        <span>{{ details.Error }}</span>
+                    </li>
+                {% endif %}
+                </ul>
+            </div>
+        {% else %}
+            <p>No valid details found or an error occurred during extraction.</p>
+        {% endif %}
+        
+        <a href="/">Upload Another Invoice</a>
+
+        <a href="{{ url_for('download_excel') }}" class="button-link"
+           style="background-color: #28a745; margin-top: 30px;">
+            Download All {{ storage_count }} Data to Excel
+        </a>
+    </div>
 </body>
 </html>
